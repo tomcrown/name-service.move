@@ -4,6 +4,9 @@ use std::string::String;
 use sui::table::{Self, Table};
 use sui::event;
 
+const E_NAME_TAKEN: u64 = 0;
+const E_ADDRESS_REGISTERED: u64 = 1;
+
 
 public struct NameRegistered has copy, drop{
     name: String,
@@ -30,4 +33,26 @@ fun init(ctx: &mut TxContext){
     };
 
     transfer::share_object(registry);
+}
+
+
+public fun register_name(
+    registry: &mut Registry,
+    name: String,
+    ctx: &mut TxContext
+) {
+
+    let sender = tx_context::sender(ctx);
+
+    assert!(!table::contains(&registry.name_to_address, name), E_NAME_TAKEN);
+    assert!(!table::contains(&registry.address_to_name, sender), E_ADDRESS_REGISTERED);
+
+    table::add(&mut registry.name_to_address, name, sender);
+    table::add(&mut registry.address_to_name, sender, name);
+
+    event::emit(
+        NameRegistered {
+            name,
+            owner: sender,
+        });
 }
