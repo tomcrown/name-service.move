@@ -26,7 +26,6 @@ public struct AddressLookupResult has copy, drop {
 }
 
 
-
 public struct Registry has key {
     id: UID,
     name_to_address: Table<String, address>,
@@ -72,8 +71,6 @@ public fun register_name(
             owner: sender,
         });
 }
-
-
 
 
 public entry fun get_name_by_address(registry: &Registry, addr: address, _ctx: &mut TxContext) {
