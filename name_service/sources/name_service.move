@@ -14,10 +14,24 @@ public struct NameRegistered has copy, drop{
 }
 
 
+public struct NameLookupResult has copy, drop {
+    address: address,
+    name: String,
+}
+
+
+public struct AddressLookupResult has copy, drop {
+    name: String,
+    address: address,
+}
+
+
+
 public struct Registry has key {
     id: UID,
     name_to_address: Table<String, address>,
     address_to_name: Table<address, String>,
+    all_names: vector<String>,
 }
 
 
@@ -30,6 +44,7 @@ fun init(ctx: &mut TxContext){
         id,
         name_to_address,
         address_to_name,
+        all_names: vector::empty()
     };
 
     transfer::share_object(registry);
@@ -49,6 +64,7 @@ public fun register_name(
 
     table::add(&mut registry.name_to_address, name, sender);
     table::add(&mut registry.address_to_name, sender, name);
+    vector::push_back(&mut registry.all_names, name);
 
     event::emit(
         NameRegistered {
@@ -56,3 +72,47 @@ public fun register_name(
             owner: sender,
         });
 }
+
+
+
+
+public entry fun get_name_by_address(registry: &Registry, addr: address, _ctx: &mut TxContext) {
+    let name_ref = table::borrow(&registry.address_to_name, addr);
+    let name = *name_ref;
+
+    event::emit(NameLookupResult {
+        address: addr,
+        name,
+    });
+}
+
+
+public entry fun get_address_by_name_(registry: &Registry, name: String, _ctx: &mut TxContext) {
+    let addr_ref = table::borrow(&registry.name_to_address, name);
+    let addr = *addr_ref; 
+
+    event::emit(AddressLookupResult {
+        name,
+        address: addr,
+    });
+}
+
+
+public entry fun emit_all_names(registry: &Registry, _ctx: &mut TxContext) {
+    let names = &registry.all_names;
+    let len = vector::length(names);
+    let mut i = 0;
+    while (i < len) {
+        let name_ref = vector::borrow(names, i);
+        let addr_ref = table::borrow(&registry.name_to_address, *name_ref);
+
+        event::emit(AddressLookupResult {
+            name: *name_ref,
+            address: *addr_ref,
+        });
+
+        i = i + 1;
+    };
+}
+
+
