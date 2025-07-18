@@ -112,4 +112,6 @@ public entry fun emit_all_names(registry: &Registry, _ctx: &mut TxContext) {
     };
 }
 
+// 0x5cb1588e453648d87d01a74adc4be62306aa312bd6d3678086e2c15e79957e1e
 
+// 0x6fda43be0603b58dfcb732c4894d09f52544d5eed6dd9df02681296e92286a06
