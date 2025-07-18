@@ -73,7 +73,7 @@ public fun register_name(
 }
 
 
-public entry fun get_name_by_address(registry: &Registry, addr: address, _ctx: &mut TxContext) {
+public fun emit_name_by_address(registry: &Registry, addr: address, _ctx: &mut TxContext) {
     let name_ref = table::borrow(&registry.address_to_name, addr);
     let name = *name_ref;
 
@@ -84,7 +84,7 @@ public entry fun get_name_by_address(registry: &Registry, addr: address, _ctx: &
 }
 
 
-public entry fun get_address_by_name_(registry: &Registry, name: String, _ctx: &mut TxContext) {
+public fun emit_address_by_name_(registry: &Registry, name: String, _ctx: &mut TxContext) {
     let addr_ref = table::borrow(&registry.name_to_address, name);
     let addr = *addr_ref; 
 
@@ -92,6 +92,21 @@ public entry fun get_address_by_name_(registry: &Registry, name: String, _ctx: &
         name,
         address: addr,
     });
+}
+
+
+public fun get_name_by_address(registry: &Registry, addr: address): String {
+    let name_ref = table::borrow(&registry.address_to_name, addr);
+    let name = *name_ref;
+    
+    name
+}
+
+
+public fun get_address_by_name(registry: &Registry, name: String): address {
+    let addr_ref = table::borrow(&registry.name_to_address, name);
+    let addr = *addr_ref;
+    addr
 }
 
 
@@ -111,7 +126,3 @@ public entry fun emit_all_names(registry: &Registry, _ctx: &mut TxContext) {
         i = i + 1;
     };
 }
-
-// 0x5cb1588e453648d87d01a74adc4be62306aa312bd6d3678086e2c15e79957e1e
-
-// 0x6fda43be0603b58dfcb732c4894d09f52544d5eed6dd9df02681296e92286a06

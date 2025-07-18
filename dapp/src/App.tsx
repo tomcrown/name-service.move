@@ -1,5 +1,5 @@
 import { ConnectButton } from "@mysten/dapp-kit";
-import { Box, Container, Flex, Heading } from "@radix-ui/themes";
+import { Container, Flex, Heading, Card } from "@radix-ui/themes";
 import { WalletStatus } from "./WalletStatus";
 
 function App() {
@@ -7,30 +7,37 @@ function App() {
     <>
       <Flex
         position="sticky"
-        px="4"
-        py="2"
-        justify="between"
+        top="0"
+        px="5"
+        py="3"
+        justify="end"
+        align="center"
         style={{
-          borderBottom: "1px solid var(--gray-a2)",
+          background: "var(--gray-a2)",
+          zIndex: 10,
+          borderBottom: "1px solid var(--gray-a3)",
         }}
       >
-        <Box>
-          <Heading>Naming Service</Heading>
-        </Box>
-
-        <Box>
-          <ConnectButton />
-        </Box>
+        <ConnectButton />
       </Flex>
-      <Container>
-        <Container
-          mt="5"
-          pt="2"
-          px="4"
-          style={{ background: "var(--gray-a2)", minHeight: 500 }}
+
+      <Flex justify="center" align="center" mt="8" mb="6">
+        <Heading size="9" weight="bold" color="gray">
+          Naming Service
+        </Heading>
+      </Flex>
+
+      <Container size="2" px="4" pb="8">
+        <Card
+          variant="classic"
+          style={{
+            background: "var(--gray-a2)",
+            padding: "2rem",
+            minHeight: 400,
+          }}
         >
           <WalletStatus />
-        </Container>
+        </Card>
       </Container>
     </>
   );
